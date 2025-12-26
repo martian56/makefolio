@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <header class="page-header">
+        <h1>Education</h1>
+        <p>My academic background and qualifications</p>
+    </header>
+
+    <div class="timeline">
+        {% for edu in education %}
+        <article class="timeline-item">
+            <div class="timeline-header">
+                <h2 class="timeline-title">{{ edu.meta.title }}</h2>
+                <div class="timeline-meta">
+                    <strong>{{ edu.meta.institution }}</strong>
+                    {% if edu.meta.location %} • {{ edu.meta.location }}{% endif %}
+                </div>
+                <div class="timeline-meta">
+                    {{ edu.meta.degree }}{% if edu.meta.field %} in {{ edu.meta.field }}{% endif %}
+                    {% if edu.meta.gpa %} • GPA: {{ edu.meta.gpa }}{% endif %}
+                </div>
+                <div class="timeline-date">
+                    {{ edu.meta.start_date|date("%B %Y") }} - 
+                    {% if edu.meta.end_date %}
+                        {{ edu.meta.end_date|date("%B %Y") }}
+                    {% else %}
+                        Present
+                    {% endif %}
+                </div>
+            </div>
+            <div class="content">
+                {{ edu.content|safe }}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

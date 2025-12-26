@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <article class="page">
+        <header>
+            <h1>{{ education.meta.title }}</h1>
+            <p class="meta">
+                <strong>{{ education.meta.institution }}</strong>
+                {% if education.meta.location %} • {{ education.meta.location }}{% endif %}
+            </p>
+            <p class="meta">
+                {{ education.meta.degree }}{% if education.meta.field %} in {{ education.meta.field }}{% endif %}
+                {% if education.meta.gpa %} • GPA: {{ education.meta.gpa }}{% endif %}
+            </p>
+            <p class="meta">
+                {{ education.meta.start_date|date("%B %Y") }} - 
+                {% if education.meta.end_date %}
+                    {{ education.meta.end_date|date("%B %Y") }}
+                {% else %}
+                    Present
+                {% endif %}
+            </p>
+        </header>
+        <div class="content">
+            {{ education.content|safe }}
+        </div>
+    </article>
+</div>
+{% endblock %}
+

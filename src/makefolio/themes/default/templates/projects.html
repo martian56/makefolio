@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <header class="page-header">
+        <h1>Projects</h1>
+        <p>A collection of my work and projects</p>
+    </header>
+
+    <div class="project-grid">
+        {% for project in projects %}
+        <article class="project-card">
+            <h2><a href="/projects/{{ project.slug }}.html">{{ project.meta.title }}</a></h2>
+            <p class="meta">
+                {% if project.meta.date %}
+                <time datetime="{{ project.meta.date }}">{{ project.meta.date }}</time>
+                {% endif %}
+            </p>
+            <p>{{ project.meta.get('description', project.markdown[:200] + '...') }}</p>
+            {% if project.meta.get('tags') %}
+            <div class="tags">
+                {% for tag in project.meta.tags %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

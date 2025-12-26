@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <article class="project-detail">
+        <header>
+            <h1>{{ project.meta.title }}</h1>
+            {% if project.meta.date %}
+            <p class="meta">
+                <time datetime="{{ project.meta.date }}">{{ project.meta.date }}</time>
+            </p>
+            {% endif %}
+        </header>
+
+        <div class="content">
+            {{ project.content|safe }}
+        </div>
+
+        {% if project.meta.get('tags') %}
+        <footer class="project-footer">
+            <div class="tags">
+                {% for tag in project.meta.tags %}
+                <span class="tag">{{ tag }}</span>
+                {% endfor %}
+            </div>
+        </footer>
+        {% endif %}
+    </article>
+</div>
+{% endblock %}
+

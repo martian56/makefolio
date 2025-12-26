@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <article class="page">
+        <header>
+            <h1>{{ experience.meta.title }}</h1>
+            <p class="meta">
+                <strong>{{ experience.meta.company }}</strong> • {{ experience.meta.position }}
+                {% if experience.meta.location %} • {{ experience.meta.location }}{% endif %}
+            </p>
+            <p class="meta">
+                {{ experience.meta.start_date|date("%B %Y") }} - 
+                {% if experience.meta.current or not experience.meta.end_date %}
+                    Present
+                {% else %}
+                    {{ experience.meta.end_date|date("%B %Y") }}
+                {% endif %}
+            </p>
+        </header>
+        <div class="content">
+            {{ experience.content|safe }}
+        </div>
+    </article>
+</div>
+{% endblock %}
+

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <header class="page-header">
+        <h1>Experience</h1>
+        <p>My professional journey and work experience</p>
+    </header>
+
+    <div class="timeline">
+        {% for exp in experience %}
+        <article class="timeline-item">
+            <div class="timeline-header">
+                <h2 class="timeline-title">{{ exp.meta.title }}</h2>
+                <div class="timeline-meta">
+                    <strong>{{ exp.meta.company }}</strong> • {{ exp.meta.position }}
+                    {% if exp.meta.location %} • {{ exp.meta.location }}{% endif %}
+                </div>
+                <div class="timeline-date">
+                    {{ exp.meta.start_date|date("%B %Y") }} - 
+                    {% if exp.meta.current or not exp.meta.end_date %}
+                        Present
+                    {% else %}
+                        {{ exp.meta.end_date|date("%B %Y") }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="content">
+                {{ exp.content|safe }}
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

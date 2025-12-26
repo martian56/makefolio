@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>{{ site.title }}</h1>
+            <p class="lead">{{ site.description }}</p>
+            <div class="hero-ctas">
+                <a href="#projects" class="btn btn-hero-primary">View Projects</a>
+                <a href="#contact" class="btn btn-hero-secondary">Get in Touch</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    {% if skills %}
+    <section class="skills-section">
+        <h2>Skills</h2>
+        <div class="skills-grid">
+            {% for skill in skills %}
+            <div class="skill-item">
+                <div class="skill-name">{{ skill.name }}</div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: {{ skill.level }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if experience %}
+    <section class="projects-preview">
+        <h2>Recent Experience</h2>
+        <div class="project-grid">
+            {% for exp in experience[:3] %}
+            <div class="project-card">
+                <h3><a href="/experience/{{ exp.slug }}.html">{{ exp.meta.title }}</a></h3>
+                <p class="meta">
+                    <strong>{{ exp.meta.company }}</strong> • {{ exp.meta.position }}
+                </p>
+                <p>{{ exp.meta.start_date|date("%B %Y") }} - 
+                    {% if exp.meta.current or not exp.meta.end_date %}Present{% else %}{{ exp.meta.end_date|date("%B %Y") }}{% endif %}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="cta">
+            <a href="/experience" class="btn">View All Experience</a>
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="projects-preview" id="projects">
+        <h2>Featured Projects</h2>
+        <div class="project-grid">
+            {% for project in projects[:6] %}
+            <div class="project-card">
+                <h3><a href="/projects/{{ project.slug }}.html">{{ project.meta.title }}</a></h3>
+                <p>{{ project.meta.get('description', project.markdown[:150] + '...') }}</p>
+                {% if project.meta.get('tags') %}
+                <div class="tags">
+                    {% for tag in project.meta.tags %}
+                    <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="cta">
+            <a href="/projects" class="btn">View All Projects</a>
+        </div>
+    </section>
+
+    {% if education %}
+    <section class="projects-preview">
+        <h2>Education</h2>
+        <div class="project-grid">
+            {% for edu in education[:3] %}
+            <div class="project-card">
+                <h3><a href="/education/{{ edu.slug }}.html">{{ edu.meta.title }}</a></h3>
+                <p class="meta">
+                    <strong>{{ edu.meta.institution }}</strong>
+                </p>
+                <p>{{ edu.meta.degree }}{% if edu.meta.field %} in {{ edu.meta.field }}{% endif %}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="cta">
+            <a href="/education" class="btn">View All Education</a>
+        </div>
+    </section>
+    {% endif %}
+
+    <section class="contact-section" id="contact">
+        <h2>Get in Touch</h2>
+        <p class="contact-intro">I'm open to new opportunities, collaborations, or technical discussions. Let's connect!</p>
+        <div class="contact-ctas">
+            {% if social.email %}
+            <a href="mailto:{{ social.email }}" class="btn btn-primary">Email Me</a>
+            {% endif %}
+            {% if social.github %}
+            <a href="https://github.com/{{ social.github }}" target="_blank" rel="noopener" class="btn btn-secondary">View GitHub</a>
+            {% endif %}
+            {% if social.website %}
+            <a href="{{ social.website }}" target="_blank" rel="noopener" class="btn btn-secondary">Visit Website</a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
