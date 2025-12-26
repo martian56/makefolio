@@ -95,8 +95,7 @@ class Builder:
         pages = [
             p
             for p in pages
-            if p["path"].parent == self.content_path
-            and p["path"].stem not in exclude_dirs
+            if p["path"].parent == self.content_path and p["path"].stem not in exclude_dirs
         ]
 
         # Sort experience and education by date (newest first)

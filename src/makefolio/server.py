@@ -83,16 +83,39 @@ class DevServer:
                     return
                 # Handle extensionless URLs (e.g., /about -> /about.html)
                 import os
+
                 original_path = self.path
-                
+
                 # Skip rewriting for files with extensions, directories, or static assets
-                if original_path and not original_path.endswith(('.html', '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.json', '.xml')) and not original_path.endswith('/'):
+                if (
+                    original_path
+                    and not original_path.endswith(
+                        (
+                            ".html",
+                            ".css",
+                            ".js",
+                            ".png",
+                            ".jpg",
+                            ".jpeg",
+                            ".gif",
+                            ".svg",
+                            ".ico",
+                            ".json",
+                            ".xml",
+                        )
+                    )
+                    and not original_path.endswith("/")
+                ):
                     # Check if .html version exists
-                    html_path = original_path + '.html' if not original_path.endswith('/') else original_path + 'index.html'
-                    file_path = os.path.join(output_dir, html_path.lstrip('/'))
+                    html_path = (
+                        original_path + ".html"
+                        if not original_path.endswith("/")
+                        else original_path + "index.html"
+                    )
+                    file_path = os.path.join(output_dir, html_path.lstrip("/"))
                     if os.path.exists(file_path) and os.path.isfile(file_path):
                         self.path = html_path
-                
+
                 super().do_GET()
 
             def log_message(self, format, *args):
@@ -117,35 +140,35 @@ class DevServer:
             if is_shutting_down.is_set():
                 return
             is_shutting_down.set()
-            
+
             print("\nShutting down server...")
             shutdown_event.set()
-            
+
             # Close socket immediately to break serve_forever() loop
             try:
                 httpd.socket.close()
             except Exception:
                 pass
-            
+
             # Stop file watcher
             try:
                 observer.stop()
                 observer.join(timeout=0.5)
             except Exception:
                 pass
-            
+
             # Shutdown server
             try:
                 httpd.shutdown()
             except Exception:
                 pass
-            
+
             # Close server socket
             try:
                 httpd.server_close()
             except Exception:
                 pass
-            
+
             print("✓ Server stopped")
 
         def signal_handler(sig, frame):
@@ -158,7 +181,7 @@ class DevServer:
             threading.Thread(target=shutdown_server, daemon=True).start()
 
         signal.signal(signal.SIGINT, signal_handler)
-        if hasattr(signal, 'SIGTERM'):
+        if hasattr(signal, "SIGTERM"):
             signal.signal(signal.SIGTERM, signal_handler)
 
         try:
