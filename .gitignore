@@ -19,6 +19,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.venv/
 
 # Virtual environments
 venv/
@@ -41,3 +42,11 @@ test/
 .DS_Store
 Thumbs.db
 
+# Claude Code / Agents
+.claude/
+.agents/
+CLAUDE.md
+skills-lock.json
+
+# uv
+uv.lock
