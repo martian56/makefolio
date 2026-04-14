@@ -1,18 +1,18 @@
 """Development server with hot reload."""
 
 import http.server
-import socketserver
-import socket
-import threading
-import signal
-import time
 import os
+import signal
+import socket
+import socketserver
+import threading
+import time
 from pathlib import Path
-from watchdog.observers import Observer
+
 from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 from makefolio.builder import Builder
-
 
 REBUILD_EXTENSIONS = (".md", ".yaml", ".html", ".css", ".js")
 STATIC_EXTENSIONS = (

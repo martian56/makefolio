@@ -1,12 +1,12 @@
 """Content parsing and site configuration."""
 
 import math
+from pathlib import Path
+from typing import Any
+
 import frontmatter
 import markdown
-from pathlib import Path
-from typing import Dict, List, Any, Set
 import yaml
-
 
 WORDS_PER_MINUTE = 200
 
@@ -17,8 +17,8 @@ class ContentParser:
     def __init__(self):
         self.md = markdown.Markdown(extensions=["fenced_code", "tables", "codehilite"])
 
-    def parse_file(self, file_path: Path) -> Dict[str, Any]:
-        with open(file_path, "r", encoding="utf-8") as f:
+    def parse_file(self, file_path: Path) -> dict[str, Any]:
+        with open(file_path, encoding="utf-8") as f:
             post = frontmatter.load(f)
 
         html_content = self.md.convert(post.content)
@@ -37,7 +37,7 @@ class ContentParser:
             "reading_time": reading_time,
         }
 
-    def parse_directory(self, dir_path: Path) -> List[Dict[str, Any]]:
+    def parse_directory(self, dir_path: Path) -> list[dict[str, Any]]:
         items = []
         if not dir_path.exists():
             return items
@@ -51,10 +51,10 @@ class ContentParser:
         return items
 
     @staticmethod
-    def collect_tags(items: List[Dict[str, Any]]) -> List[str]:
+    def collect_tags(items: list[dict[str, Any]]) -> list[str]:
         """Collect and deduplicate tags across a list of content items."""
-        seen: Set[str] = set()
-        tags: List[str] = []
+        seen: set[str] = set()
+        tags: list[str] = []
         for item in items:
             for tag in item.get("meta", {}).get("tags", []):
                 lower = tag.lower()
@@ -72,11 +72,11 @@ class SiteConfig:
         self.config_path = config_path
         self.data = self._load_config()
 
-    def _load_config(self) -> Dict[str, Any]:
+    def _load_config(self) -> dict[str, Any]:
         if not self.config_path.exists():
             return {}
 
-        with open(self.config_path, "r", encoding="utf-8") as f:
+        with open(self.config_path, encoding="utf-8") as f:
             return yaml.safe_load(f) or {}
 
     def get(self, key: str, default: Any = None) -> Any:

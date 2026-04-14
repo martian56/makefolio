@@ -1,10 +1,10 @@
 """Site builder and renderer."""
 
 import shutil
-from pathlib import Path
-from typing import Dict, Any
 from datetime import datetime
-from xml.etree.ElementTree import Element, SubElement, ElementTree
+from pathlib import Path
+from typing import Any
+from xml.etree.ElementTree import Element, ElementTree, SubElement
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -114,12 +114,12 @@ class Builder:
                     target.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(item, target)
 
-    def _render_home(self, context: Dict[str, Any]):
+    def _render_home(self, context: dict[str, Any]):
         template = self.env.get_template("index.html")
         html = template.render(**context)
         (self.output_path / "index.html").write_text(html, encoding="utf-8")
 
-    def _render_projects(self, context: Dict[str, Any]):
+    def _render_projects(self, context: dict[str, Any]):
         projects_dir = self.output_path / "projects"
         projects_dir.mkdir(exist_ok=True)
 
@@ -138,7 +138,7 @@ class Builder:
             slug = project["slug"]
             (projects_dir / f"{slug}.html").write_text(html, encoding="utf-8")
 
-    def _render_experience(self, context: Dict[str, Any]):
+    def _render_experience(self, context: dict[str, Any]):
         experience_dir = self.output_path / "experience"
         experience_dir.mkdir(exist_ok=True)
 
@@ -154,7 +154,7 @@ class Builder:
             slug = exp["slug"]
             (experience_dir / f"{slug}.html").write_text(html, encoding="utf-8")
 
-    def _render_education(self, context: Dict[str, Any]):
+    def _render_education(self, context: dict[str, Any]):
         education_dir = self.output_path / "education"
         education_dir.mkdir(exist_ok=True)
 
@@ -169,7 +169,7 @@ class Builder:
             slug = edu["slug"]
             (education_dir / f"{slug}.html").write_text(html, encoding="utf-8")
 
-    def _render_pages(self, context: Dict[str, Any]):
+    def _render_pages(self, context: dict[str, Any]):
         page_template = self.env.get_template("page.html")
         for page in context["pages"]:
             slug = page["slug"]
@@ -179,7 +179,7 @@ class Builder:
             html = page_template.render(**page_context)
             (self.output_path / f"{slug}.html").write_text(html, encoding="utf-8")
 
-    def _generate_sitemap(self, context: Dict[str, Any]):
+    def _generate_sitemap(self, context: dict[str, Any]):
         site_url = context["site"].get("url", "").rstrip("/")
         if not site_url:
             return

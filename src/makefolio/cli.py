@@ -7,7 +7,7 @@ import click
 
 from makefolio.builder import Builder
 from makefolio.server import DevServer
-from makefolio.utils import init_project, create_content_file
+from makefolio.utils import create_content_file, init_project
 
 
 @click.group()
@@ -38,10 +38,10 @@ def init(name, path):
 
     init_project(target_dir)
     click.echo(f"Created new makefolio project at {target_dir}")
-    click.echo(f"\nNext steps:")
+    click.echo("\nNext steps:")
     click.echo(f"  cd {target_dir}")
-    click.echo(f"  makefolio build")
-    click.echo(f"  makefolio serve")
+    click.echo("  makefolio build")
+    click.echo("  makefolio serve")
 
 
 @main.command()

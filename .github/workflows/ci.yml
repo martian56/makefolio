@@ -26,8 +26,14 @@ jobs:
     - name: Install dependencies
       run: uv pip install -e ".[dev]"
 
-    - name: Run linter (Black)
-      run: uv run black --check src/
+    - name: Format check (Ruff)
+      run: uv run ruff format --check src/
+
+    - name: Lint (Ruff)
+      run: uv run ruff check src/
+
+    - name: Type check (ty)
+      run: uv run ty check src/
 
     - name: Test with pytest
       run: |

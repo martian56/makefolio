@@ -1,8 +1,8 @@
 """Utility functions for project scaffolding and content creation."""
 
 import shutil
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 
 def init_project(target_dir: Path):
@@ -83,7 +83,7 @@ Write about yourself here.
         shutil.copytree(theme_source, theme_target, dirs_exist_ok=True)
 
 
-def create_content_file(source_path: Path, content_type: str, name: str = None) -> Path:
+def create_content_file(source_path: Path, content_type: str, name: str | None = None) -> Path:
     """Create a new content file with frontmatter template for the given type."""
     if not name:
         timestamp = datetime.now().strftime("%Y-%m-%d")
