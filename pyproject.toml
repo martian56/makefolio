@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "makefolio"
-version = "0.1.2"
+version = "0.1.3"
 description = "A modern, fast static site generator for professional portfolio websites"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -40,7 +40,6 @@ dev = [
     "ty>=0.0.1a7",
     "pytest>=7.4.4",
     "pytest-cov>=4.1.0",
-    "bump-my-version>=0.15.0",
 ]
 
 [project.scripts]
