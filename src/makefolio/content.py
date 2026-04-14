@@ -1,25 +1,31 @@
-"""Content parsing and management."""
+"""Content parsing and site configuration."""
 
+import math
 import frontmatter
 import markdown
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Set
 import yaml
 
 
+WORDS_PER_MINUTE = 200
+
+
 class ContentParser:
-    """Parse markdown files with frontmatter."""
+    """Parse markdown files with frontmatter into renderable content."""
 
     def __init__(self):
         self.md = markdown.Markdown(extensions=["fenced_code", "tables", "codehilite"])
 
     def parse_file(self, file_path: Path) -> Dict[str, Any]:
-        """Parse a markdown file and return content with metadata."""
         with open(file_path, "r", encoding="utf-8") as f:
             post = frontmatter.load(f)
 
         html_content = self.md.convert(post.content)
         self.md.reset()
+
+        word_count = len(post.content.split())
+        reading_time = max(1, math.ceil(word_count / WORDS_PER_MINUTE))
 
         return {
             "content": html_content,
@@ -27,10 +33,11 @@ class ContentParser:
             "meta": post.metadata,
             "path": file_path,
             "slug": file_path.stem,
+            "word_count": word_count,
+            "reading_time": reading_time,
         }
 
     def parse_directory(self, dir_path: Path) -> List[Dict[str, Any]]:
-        """Parse all markdown files in a directory."""
         items = []
         if not dir_path.exists():
             return items
@@ -43,16 +50,29 @@ class ContentParser:
 
         return items
 
+    @staticmethod
+    def collect_tags(items: List[Dict[str, Any]]) -> List[str]:
+        """Collect and deduplicate tags across a list of content items."""
+        seen: Set[str] = set()
+        tags: List[str] = []
+        for item in items:
+            for tag in item.get("meta", {}).get("tags", []):
+                lower = tag.lower()
+                if lower not in seen:
+                    seen.add(lower)
+                    tags.append(tag)
+        tags.sort(key=str.lower)
+        return tags
+
 
 class SiteConfig:
-    """Load and manage site configuration."""
+    """Load and manage site configuration from YAML."""
 
     def __init__(self, config_path: Path):
         self.config_path = config_path
         self.data = self._load_config()
 
     def _load_config(self) -> Dict[str, Any]:
-        """Load configuration from YAML file."""
         if not self.config_path.exists():
             return {}
 
@@ -60,7 +80,6 @@ class SiteConfig:
             return yaml.safe_load(f) or {}
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Get a configuration value."""
         keys = key.split(".")
         value = self.data
         for k in keys:
@@ -73,5 +92,4 @@ class SiteConfig:
         return value
 
     def __getitem__(self, key: str) -> Any:
-        """Get configuration value using bracket notation."""
         return self.get(key)
