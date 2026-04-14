@@ -2,27 +2,30 @@
 
 {% block content %}
 <div class="container">
-    <header class="page-header">
+    <header class="page-header reveal">
         <h1>Experience</h1>
-        <p>My professional journey and work experience</p>
+        <p>My professional journey</p>
     </header>
 
+    {% if experience %}
     <div class="timeline">
         {% for exp in experience %}
-        <article class="timeline-item">
+        <article class="timeline-item reveal">
             <div class="timeline-header">
-                <h2 class="timeline-title">{{ exp.meta.title }}</h2>
+                <h2 class="timeline-title">
+                    <a href="/experience/{{ exp.slug }}">{{ exp.meta.position|default(exp.meta.title) }}</a>
+                    {% if exp.meta.current or not exp.meta.end_date %}
+                    <span class="current-badge">Current</span>
+                    {% endif %}
+                </h2>
                 <div class="timeline-meta">
-                    <strong>{{ exp.meta.company }}</strong> • {{ exp.meta.position }}
-                    {% if exp.meta.location %} • {{ exp.meta.location }}{% endif %}
+                    <strong>{{ exp.meta.company }}</strong>
+                    {% if exp.meta.location %} &middot; {{ exp.meta.location }}{% endif %}
                 </div>
                 <div class="timeline-date">
-                    {{ exp.meta.start_date|date("%B %Y") }} - 
-                    {% if exp.meta.current or not exp.meta.end_date %}
-                        Present
-                    {% else %}
-                        {{ exp.meta.end_date|date("%B %Y") }}
-                    {% endif %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    {{ exp.meta.start_date|date("%B %Y") }} &ndash;
+                    {% if exp.meta.current or not exp.meta.end_date %}Present{% else %}{{ exp.meta.end_date|date("%B %Y") }}{% endif %}
                 </div>
             </div>
             <div class="content">
@@ -31,6 +34,10 @@
         </article>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state reveal">
+        <p>No experience entries yet.</p>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
-

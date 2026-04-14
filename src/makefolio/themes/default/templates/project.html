@@ -2,14 +2,35 @@
 
 {% block content %}
 <div class="container">
-    <article class="project-detail">
-        <header>
-            <h1>{{ project.meta.title }}</h1>
-            {% if project.meta.date %}
-            <p class="meta">
-                <time datetime="{{ project.meta.date }}">{{ project.meta.date }}</time>
-            </p>
+    <article class="detail-page">
+        <a href="/projects" class="back-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Projects
+        </a>
+
+        <header class="detail-header">
+            {% if project.meta.get('featured') %}
+            <span class="featured-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Featured Project
+            </span>
             {% endif %}
+            <h1>{{ project.meta.title }}</h1>
+            <div class="detail-meta">
+                {% if project.meta.date %}
+                <span class="detail-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <time datetime="{{ project.meta.date }}">{{ project.meta.date|date }}</time>
+                </span>
+                {% endif %}
+                {% if project.reading_time %}
+                <span class="separator"></span>
+                <span class="reading-time">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {{ project.reading_time }} min read
+                </span>
+                {% endif %}
+            </div>
         </header>
 
         <div class="content">
@@ -17,7 +38,7 @@
         </div>
 
         {% if project.meta.get('tags') %}
-        <footer class="project-footer">
+        <footer class="detail-footer">
             <div class="tags">
                 {% for tag in project.meta.tags %}
                 <span class="tag">{{ tag }}</span>
@@ -28,4 +49,3 @@
     </article>
 </div>
 {% endblock %}
-

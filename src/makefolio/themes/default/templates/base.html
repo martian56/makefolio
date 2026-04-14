@@ -3,21 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if page %}{{ page.meta.title }} - {% endif %}{{ site.title }}</title>
-    <meta name="description" content="{{ site.description }}">
+    <title>{% block title %}{% if page_title %}{{ page_title }} — {% endif %}{{ site.title }}{% endblock %}</title>
+    <meta name="description" content="{{ page_description|default(site.description) }}">
+    <meta name="author" content="{{ site.author }}">
+
+    <meta property="og:title" content="{{ page_title|default(site.title) }}">
+    <meta property="og:description" content="{{ page_description|default(site.description) }}">
+    <meta property="og:type" content="website">
+    {% if site.url %}<meta property="og:url" content="{{ site.url }}">{% endif %}
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ page_title|default(site.title) }}">
+    <meta name="twitter:description" content="{{ page_description|default(site.description) }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
         <div class="container">
             <a href="/" class="logo">{{ site.title }}</a>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+                <span class="bar"></span>
+            </button>
+
             <ul class="nav-links">
                 {% for item in nav %}
                 <li><a href="{{ item.url }}">{{ item.name }}</a></li>
                 {% endfor %}
                 <li>
-                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
-                        <span class="theme-icon">🌙</span>
+                    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
                     </button>
                 </li>
             </ul>
@@ -30,54 +50,87 @@
 
     <footer class="footer">
         <div class="container">
+            <p class="footer-copy">&copy; {{ site.author }}</p>
             <div class="social-links">
                 {% if social.github %}
-                <a href="https://github.com/{{ social.github }}" target="_blank" rel="noopener" title="GitHub">GitHub</a>
+                <a href="https://github.com/{{ social.github }}" target="_blank" rel="noopener" aria-label="GitHub">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
                 {% endif %}
                 {% if social.gitlab %}
-                <a href="https://gitlab.com/{{ social.gitlab }}" target="_blank" rel="noopener" title="GitLab">GitLab</a>
-                {% endif %}
-                {% if social.twitter %}
-                <a href="https://twitter.com/{{ social.twitter }}" target="_blank" rel="noopener" title="Twitter">Twitter</a>
+                <a href="https://gitlab.com/{{ social.gitlab }}" target="_blank" rel="noopener" aria-label="GitLab">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="m23.6 9.593-.033-.086L20.3.98a.851.851 0 0 0-.336-.405.874.874 0 0 0-1.002.07.874.874 0 0 0-.29.44l-2.208 6.763H7.538L5.33 1.085a.857.857 0 0 0-.29-.44.874.874 0 0 0-1.002-.07.854.854 0 0 0-.336.405L.433 9.502l-.032.086a6.066 6.066 0 0 0 2.012 7.01l.01.008.028.02 4.968 3.72 2.458 1.86 1.496 1.13a1.009 1.009 0 0 0 1.22 0l1.496-1.13 2.458-1.86 4.996-3.74.013-.01a6.07 6.07 0 0 0 2.01-7.003z"/></svg>
+                </a>
                 {% endif %}
                 {% if social.linkedin %}
-                <a href="https://linkedin.com/in/{{ social.linkedin }}" target="_blank" rel="noopener" title="LinkedIn">LinkedIn</a>
+                <a href="https://linkedin.com/in/{{ social.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+                {% endif %}
+                {% if social.twitter %}
+                <a href="https://twitter.com/{{ social.twitter }}" target="_blank" rel="noopener" aria-label="Twitter">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
                 {% endif %}
                 {% if social.email %}
-                <a href="mailto:{{ social.email }}" title="Email">Email</a>
+                <a href="mailto:{{ social.email }}" aria-label="Email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </a>
                 {% endif %}
                 {% if social.website %}
-                <a href="{{ social.website }}" target="_blank" rel="noopener" title="Website">Website</a>
+                <a href="{{ social.website }}" target="_blank" rel="noopener" aria-label="Website">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </a>
                 {% endif %}
                 {% if social.medium %}
-                <a href="https://medium.com/@{{ social.medium }}" target="_blank" rel="noopener" title="Medium">Medium</a>
+                <a href="https://medium.com/@{{ social.medium }}" target="_blank" rel="noopener" aria-label="Medium">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42s-3.39-2.88-3.39-6.42 1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42zM24 12c0 3.17-.53 5.75-1.19 5.75S21.62 15.17 21.62 12s.54-5.75 1.19-5.75S24 8.83 24 12z"/></svg>
+                </a>
                 {% endif %}
                 {% if social.devto %}
-                <a href="https://dev.to/{{ social.devto }}" target="_blank" rel="noopener" title="Dev.to">Dev.to</a>
-                {% endif %}
-                {% if social.dribbble %}
-                <a href="https://dribbble.com/{{ social.dribbble }}" target="_blank" rel="noopener" title="Dribbble">Dribbble</a>
-                {% endif %}
-                {% if social.behance %}
-                <a href="https://behance.net/{{ social.behance }}" target="_blank" rel="noopener" title="Behance">Behance</a>
-                {% endif %}
-                {% if social.instagram %}
-                <a href="https://instagram.com/{{ social.instagram }}" target="_blank" rel="noopener" title="Instagram">Instagram</a>
-                {% endif %}
-                {% if social.youtube %}
-                <a href="https://youtube.com/@{{ social.youtube }}" target="_blank" rel="noopener" title="YouTube">YouTube</a>
+                <a href="https://dev.to/{{ social.devto }}" target="_blank" rel="noopener" aria-label="Dev.to">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.42 10.05c-.18-.16-.46-.23-.84-.23H6v4.36h.58c.37 0 .67-.08.84-.23.2-.17.3-.48.3-.94v-2.02c0-.47-.1-.77-.3-.94zM0 4.94v14.12h24V4.94H0zM8.56 15.3c-.44.58-1.06.77-1.94.77H4.78V8.53h1.84c.88 0 1.5.2 1.94.77.38.5.56 1.18.56 2.41v1.18c0 1.23-.18 1.9-.56 2.41zm4.69-4.16H11.3v1.77h1.27v1.12H11.3v1.86h1.95v1.12H10.1V8.53h3.15v1.12h-.01v1.49zm4.43 4.49c-.36.69-.93 1.07-1.63 1.07-.38 0-.77-.12-1.04-.37-.22-.2-.38-.5-.47-.89l-.08-.45H15.6l.05.28c.05.26.14.47.28.64.18.22.45.33.8.33.45 0 .77-.26.95-.77.1-.27.14-.68.14-1.22v-.78c0-.55-.04-.95-.14-1.22-.18-.51-.5-.77-.95-.77-.35 0-.62.11-.8.33-.14.17-.23.38-.28.64l-.05.28h-1.14l.08-.45c.09-.39.25-.69.47-.89.27-.25.66-.37 1.04-.37.7 0 1.27.38 1.63 1.07.24.47.36 1.1.36 1.93v.22c0 .83-.12 1.46-.36 1.93v.01z"/></svg>
+                </a>
                 {% endif %}
                 {% if social.stackoverflow %}
-                <a href="https://stackoverflow.com/users/{{ social.stackoverflow }}" target="_blank" rel="noopener" title="Stack Overflow">Stack Overflow</a>
+                <a href="https://stackoverflow.com/users/{{ social.stackoverflow }}" target="_blank" rel="noopener" aria-label="Stack Overflow">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.725 0l-1.72 1.277 6.39 8.588 1.716-1.277L15.725 0zm-3.94 3.418l-1.369 1.644 8.225 6.85 1.369-1.644-8.225-6.85zm-3.15 4.465l-.905 1.94 9.702 4.517.904-1.94-9.701-4.517zm-1.85 4.86l-.44 2.093 10.473 2.201.44-2.092-10.473-2.203zM1.89 15.47V24h19.19v-8.53h-2.133v6.397H4.021v-6.396H1.89zm4.265 2.133v2.13h10.66v-2.13H6.154z"/></svg>
+                </a>
+                {% endif %}
+                {% if social.youtube %}
+                <a href="https://youtube.com/@{{ social.youtube }}" target="_blank" rel="noopener" aria-label="YouTube">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </a>
+                {% endif %}
+                {% if social.instagram %}
+                <a href="https://instagram.com/{{ social.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 1 1-2.882 0 1.441 1.441 0 0 1 2.882 0z"/></svg>
+                </a>
+                {% endif %}
+                {% if social.dribbble %}
+                <a href="https://dribbble.com/{{ social.dribbble }}" target="_blank" rel="noopener" aria-label="Dribbble">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.04 6.4 1.73 1.358 3.92 2.166 6.29 2.166 1.42 0 2.77-.29 4-.81zm-11.62-2.58c.232-.4 3.045-5.055 8.332-6.765.135-.045.27-.084.405-.12-.26-.585-.54-1.167-.832-1.74C7.17 11.775 2.206 11.71 1.756 11.7l-.004.312c0 2.633.998 5.037 2.634 6.855zm-2.42-8.955c.46.008 4.683.026 9.477-1.248-1.698-3.018-3.53-5.558-3.8-5.928-2.868 1.35-5.01 3.99-5.676 7.17zM9.6 2.052c.282.38 2.145 2.914 3.822 6 3.645-1.365 5.19-3.44 5.373-3.702A10.032 10.032 0 0 0 12 1.96c-.83 0-1.634.105-2.4.285zm10.335 3.483c-.218.29-1.91 2.493-5.724 4.04.24.49.47.985.68 1.486.08.18.15.36.22.53 3.41-.43 6.8.26 7.14.33-.02-2.42-.88-4.64-2.31-6.38z"/></svg>
+                </a>
+                {% endif %}
+                {% if social.behance %}
+                <a href="https://behance.net/{{ social.behance }}" target="_blank" rel="noopener" aria-label="Behance">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.938 4.503c.702 0 1.34.06 1.92.188.577.13 1.07.33 1.485.61.41.28.733.65.96 1.12.225.47.34 1.05.34 1.73 0 .74-.17 1.36-.507 1.86-.338.5-.837.9-1.502 1.22.906.26 1.576.72 2.022 1.37.448.66.665 1.45.665 2.36 0 .75-.13 1.39-.41 1.93-.28.55-.67 1-1.16 1.35-.48.348-1.05.6-1.67.767-.63.165-1.27.25-1.95.25H0V4.51h6.938v-.007zM6.545 10.16c.6 0 1.09-.16 1.47-.477.38-.316.57-.77.57-1.36 0-.33-.06-.6-.17-.82-.12-.22-.28-.39-.48-.52-.2-.13-.43-.22-.69-.27-.26-.05-.55-.08-.86-.08H3.19v3.53h3.355v-.003zm.17 5.81c.33 0 .65-.04.95-.1.3-.07.56-.18.78-.33.22-.15.4-.36.53-.63.13-.27.19-.61.19-1.02 0-.8-.22-1.37-.66-1.7-.44-.33-1.01-.49-1.72-.49H3.19v4.28h3.525v-.008zM15.49 13.49c.24.7.68 1.09 1.52 1.09.6 0 1.04-.18 1.35-.54.18-.21.29-.45.35-.71h2.44c-.19.78-.59 1.45-1.2 1.97-.6.52-1.39.78-2.37.78-.64 0-1.22-.1-1.72-.31-.5-.21-.93-.51-1.28-.9s-.62-.86-.8-1.39c-.18-.53-.28-1.11-.28-1.73 0-.6.1-1.16.3-1.67.2-.52.48-.96.85-1.34.37-.38.8-.67 1.31-.89.51-.22 1.07-.33 1.68-.33.69 0 1.29.14 1.8.42.51.28.93.65 1.26 1.13.33.47.57 1.02.72 1.62.14.61.19 1.25.13 1.94h-6.85l-.01.003zm3.86-2.72c-.15-.56-.45-.96-1.04-1.18-.35-.13-.74-.2-1.16-.2-.6 0-1.08.15-1.41.44-.56.47-.78 1.05-.85 1.57h4.81l-.35-.63zm.78-5.77h-5.67V3h5.67v2z"/></svg>
+                </a>
                 {% endif %}
                 {% if social.codepen %}
-                <a href="https://codepen.io/{{ social.codepen }}" target="_blank" rel="noopener" title="CodePen">CodePen</a>
+                <a href="https://codepen.io/{{ social.codepen }}" target="_blank" rel="noopener" aria-label="CodePen">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.144 13.067v-2.134L16.55 12zm1.715 1.135a.544.544 0 0 1-.065.033l-7.05 4.7a.544.544 0 0 1-.603 0l-7.05-4.7a.544.544 0 0 1-.065-.033v-4.404a.544.544 0 0 1 .065-.033l7.05-4.7a.544.544 0 0 1 .603 0l7.05 4.7a.544.544 0 0 1 .065.033v4.404zm-8.315 3.402v-3.778l-3.122-2.083 3.122 2.083v3.778zm1.912 0l3.122-2.083-3.122 2.083V17.604zM12 10.93l-3.122-2.083L12 6.764l3.122 2.083L12 10.93zm-6.288-1.397L12 5.73v4.397L5.712 9.533zm0 4.934L12 18.27v-4.397l-6.288.597zM12 14.337l-3.122 2.083L12 18.503l3.122-2.083L12 14.337zm6.288-4.804L12 5.73v4.397l6.288.597v-1.19z"/></svg>
+                </a>
+                {% endif %}
+                {% if social.telegram %}
+                <a href="https://t.me/{{ social.telegram }}" target="_blank" rel="noopener" aria-label="Telegram">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                </a>
                 {% endif %}
             </div>
-            <p>&copy; {{ site.author }}. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="/static/js/theme.js"></script>
 </body>
 </html>
-

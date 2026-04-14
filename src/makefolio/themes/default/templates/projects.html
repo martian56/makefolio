@@ -2,21 +2,42 @@
 
 {% block content %}
 <div class="container">
-    <header class="page-header">
+    <header class="page-header reveal">
         <h1>Projects</h1>
-        <p>A collection of my work and projects</p>
+        <p>A collection of my work and side projects</p>
     </header>
 
+    {% if all_tags %}
+    <div class="tags reveal" style="justify-content: center; margin-bottom: 2rem;">
+        {% for tag in all_tags %}
+        <span class="tag">{{ tag }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if projects %}
     <div class="project-grid">
         {% for project in projects %}
-        <article class="project-card">
-            <h2><a href="/projects/{{ project.slug }}.html">{{ project.meta.title }}</a></h2>
-            <p class="meta">
-                {% if project.meta.date %}
-                <time datetime="{{ project.meta.date }}">{{ project.meta.date }}</time>
+        <article class="project-card reveal reveal-delay-{{ ((loop.index - 1) % 3) + 1 }}">
+            <div class="project-card-header">
+                <div class="project-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                {% if project.meta.get('featured') %}
+                <span class="featured-badge">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Featured
+                </span>
                 {% endif %}
+            </div>
+            <h2><a href="/projects/{{ project.slug }}">{{ project.meta.title }}</a></h2>
+            {% if project.meta.date %}
+            <p class="meta">
+                <time datetime="{{ project.meta.date }}">{{ project.meta.date|date }}</time>
+                {% if project.reading_time %} &middot; {{ project.reading_time }} min read{% endif %}
             </p>
-            <p>{{ project.meta.get('description', project.markdown[:200] + '...') }}</p>
+            {% endif %}
+            <p>{{ project.meta.get('description', project.markdown[:180] + '...') }}</p>
             {% if project.meta.get('tags') %}
             <div class="tags">
                 {% for tag in project.meta.tags %}
@@ -27,6 +48,10 @@
         </article>
         {% endfor %}
     </div>
+    {% else %}
+    <div class="empty-state reveal">
+        <p>No projects yet.</p>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
-
