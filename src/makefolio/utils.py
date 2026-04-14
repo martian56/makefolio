@@ -1,4 +1,4 @@
-"""Utility functions for makefolio."""
+"""Utility functions for project scaffolding and content creation."""
 
 import shutil
 from pathlib import Path
@@ -6,10 +6,9 @@ from datetime import datetime
 
 
 def init_project(target_dir: Path):
-    """Initialize a new makefolio project structure."""
+    """Initialize a new makefolio project with default structure and config."""
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    # Create directory structure
     (target_dir / "content").mkdir(exist_ok=True)
     (target_dir / "content" / "projects").mkdir(exist_ok=True)
     (target_dir / "content" / "experience").mkdir(exist_ok=True)
@@ -17,14 +16,15 @@ def init_project(target_dir: Path):
     (target_dir / "static").mkdir(exist_ok=True)
     (target_dir / "themes").mkdir(exist_ok=True)
 
-    # Create default config
     config_content = """# Site Configuration
 site:
   title: "My Portfolio"
   description: "A professional portfolio website"
   author: "Your Name"
   url: "https://example.com"
-  theme: "light"  # light or dark
+  theme: "light"
+  greeting: "Hello, I'm"
+  headline: "Software Engineer"
 
 # Social Links
 social:
@@ -67,7 +67,6 @@ nav:
 """
     (target_dir / "content" / "config.yaml").write_text(config_content)
 
-    # Create about page
     about_content = """---
 title: About
 ---
@@ -78,7 +77,6 @@ Write about yourself here.
 """
     (target_dir / "content" / "about.md").write_text(about_content)
 
-    # Copy default theme
     theme_source = Path(__file__).parent / "themes" / "default"
     theme_target = target_dir / "themes" / "default"
     if theme_source.exists():
@@ -86,7 +84,7 @@ Write about yourself here.
 
 
 def create_content_file(source_path: Path, content_type: str, name: str = None) -> Path:
-    """Create a new content file."""
+    """Create a new content file with frontmatter template for the given type."""
     if not name:
         timestamp = datetime.now().strftime("%Y-%m-%d")
         name = f"{timestamp}-{content_type}"
@@ -108,16 +106,19 @@ def create_content_file(source_path: Path, content_type: str, name: str = None) 
     if file_path.exists():
         raise FileExistsError(f"File {file_path} already exists")
 
-    # Default frontmatter based on type
-    if content_type == "project":
-        frontmatter = f"""---
-title: "{name.replace('-', ' ').title()}"
-date: {datetime.now().strftime("%Y-%m-%d")}
+    title = name.replace("-", " ").title()
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    templates = {
+        "project": f"""---
+title: "{title}"
+date: {today}
 tags: []
 featured: false
+description: ""
 ---
 
-# {name.replace('-', ' ').title()}
+# {title}
 
 Project description here.
 
@@ -130,19 +131,18 @@ Project description here.
 
 - Technology 1
 - Technology 2
-"""
-    elif content_type == "experience":
-        frontmatter = f"""---
-title: "{name.replace('-', ' ').title()}"
+""",
+        "experience": f"""---
+title: "{title}"
 company: "Company Name"
 position: "Job Title"
 location: "City, Country"
-start_date: {datetime.now().strftime("%Y-%m-%d")}
-end_date: ""  # Leave empty for current position
+start_date: {today}
+end_date: ""
 current: true
 ---
 
-# {name.replace('-', ' ').title()}
+# {title}
 
 Job description and responsibilities.
 
@@ -155,20 +155,19 @@ Job description and responsibilities.
 
 - Technology 1
 - Technology 2
-"""
-    elif content_type == "education":
-        frontmatter = f"""---
-title: "{name.replace('-', ' ').title()}"
+""",
+        "education": f"""---
+title: "{title}"
 institution: "University Name"
 degree: "Degree Type"
 field: "Field of Study"
 location: "City, Country"
-start_date: {datetime.now().strftime("%Y-%m-%d")}
+start_date: {today}
 end_date: ""
-gpa: ""  # Optional
+gpa: ""
 ---
 
-# {name.replace('-', ' ').title()}
+# {title}
 
 Education details and achievements.
 
@@ -181,17 +180,21 @@ Education details and achievements.
 
 - Activity 1
 - Activity 2
-"""
-    else:
-        frontmatter = f"""---
-title: "{name.replace('-', ' ').title()}"
-date: {datetime.now().strftime("%Y-%m-%d")}
+""",
+    }
+
+    content = templates.get(
+        content_type,
+        f"""---
+title: "{title}"
+date: {today}
 ---
 
-# {name.replace('-', ' ').title()}
+# {title}
 
 Content here.
-"""
+""",
+    )
 
-    file_path.write_text(frontmatter)
+    file_path.write_text(content)
     return file_path

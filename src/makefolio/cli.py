@@ -1,6 +1,5 @@
 """Command-line interface for makefolio."""
 
-import os
 import sys
 from pathlib import Path
 
@@ -38,7 +37,7 @@ def init(name, path):
         sys.exit(1)
 
     init_project(target_dir)
-    click.echo(f"✓ Created new makefolio project at {target_dir}")
+    click.echo(f"Created new makefolio project at {target_dir}")
     click.echo(f"\nNext steps:")
     click.echo(f"  cd {target_dir}")
     click.echo(f"  makefolio build")
@@ -67,7 +66,7 @@ def build(source, output):
     click.echo(f"Building site from {source_path}...")
     builder = Builder(source_path, output_path)
     builder.build()
-    click.echo(f"✓ Site built successfully in {output_path}")
+    click.echo(f"Site built successfully in {output_path}")
 
 
 @main.command()
@@ -118,4 +117,4 @@ def new(type, name, source):
     """Create a new content file."""
     source_path = Path(source)
     content_path = create_content_file(source_path, type, name)
-    click.echo(f"✓ Created {content_path}")
+    click.echo(f"Created {content_path}")
