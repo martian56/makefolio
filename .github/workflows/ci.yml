@@ -18,23 +18,21 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+      run: uv python install ${{ matrix.python-version }}
 
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -e ".[dev]"
+      run: uv pip install -e ".[dev]" --system
 
     - name: Run linter (Black)
-      run: |
-        black --check src/
+      run: uv run black --check src/
 
     - name: Test with pytest
       run: |
-        pytest --cov=src/makefolio --cov-report=xml --cov-report=term || echo "No tests found, skipping"
+        uv run pytest --cov=src/makefolio --cov-report=xml --cov-report=term || echo "No tests found, skipping"
       continue-on-error: true
 
     - name: Upload coverage to Codecov
@@ -53,23 +51,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
     - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
+      run: uv python install 3.12
 
     - name: Install build dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build twine
+      run: uv pip install build twine --system
 
     - name: Build package
-      run: |
-        python -m build
+      run: uv run python -m build
 
     - name: Check package
-      run: |
-        twine check dist/*
+      run: uv run twine check dist/*
 
   publish:
     runs-on: ubuntu-latest
@@ -82,20 +77,21 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
     - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
+      run: uv python install 3.12
 
     - name: Install build dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install build twine
+      run: uv pip install build twine --system
 
     - name: Build package
-      run: |
-        python -m build
+      run: uv run python -m build
 
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: uv run twine upload dist/*
 
